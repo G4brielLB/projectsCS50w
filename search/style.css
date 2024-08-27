@@ -1,0 +1,24 @@
+.container {
+    padding: 1rem 0;
+}
+
+.container input {
+    margin: 0.5rem;
+}
+
+.centered form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 90vh; 
+    transform: translateY(-10vh); 
+  }
+
+
+input[type="text"] {
+    border-radius: 1rem;
+
+}

@@ -1,0 +1,229 @@
+body {
+    padding: 1rem;
+}
+
+/* Style the form container */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style form labels */
+.form-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+}
+
+/* Style input fields */
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="url"],
+.form-container select,
+.form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #495057;
+}
+
+/* Style buttons */
+.form-container button[type="submit"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Optional: Add some spacing between fields */
+.form-container .form-group {
+    margin-bottom: 15px;
+}
+
+/* Style the form's heading */
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Style for div listing */
+.listing {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+/* Style for listing's title */
+.listing h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Style for link listing title */
+.listing h3 a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.listing h3 a:hover {
+    text-decoration: underline;
+}
+
+/* Styling for listing description */
+.listing p {
+    margin: 5px 0;
+    color: #555;
+}
+
+/* Styling for listing's price */
+.listing p:nth-child(3) {
+    font-weight: bold;
+    color: #000;
+}
+
+/* Styling for listing's category */
+.listing p:nth-child(4) {
+    font-style: italic;
+    color: #777;
+}
+
+/* Styling for listing's creator */
+.listing p:nth-child(5) {
+    color: #999;
+}
+
+/* Styling for listing's image */
+.listing img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Estilizando as imagens das listagens */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Estilos para os parágrafos */
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+/* Estilos para botões */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para formulários */
+form {
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilos das listas */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+ul li p {
+    margin: 5px 0;
+}
+
+/* Estilo para as seções de título */
+h4 {
+    color: #333;
+    margin-top: 20px;
+    font-size: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+/* Estilo para a exibição das mensagens */
+.message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+/* Estilo para destacar listagens ativas e fechadas */
+.listing-active {
+    color: green;
+    font-weight: bold;
+}
+
+.listing-closed {
+    color: red;
+    font-weight: bold;
+}

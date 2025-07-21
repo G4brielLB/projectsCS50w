@@ -1,0 +1,138 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2 class="mb-4">All Posts</h2>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for post in page_obj %}
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a>
+                            </h5>
+                            <p class="card-text" id="post-content-{{ post.id }}">{{ post.content }}</p>
+                            <small class="text-muted">{{ post.timestamp }}</small>
+                            <div class="mt-2">
+                                {% if user.is_authenticated %}
+                                    {% if post.user == user %}
+                                        <button class="btn btn-secondary btn-sm edit-button" data-post-id="{{ post.id }}">Edit</button>
+                                    {% endif %}
+                                    {% if post.id in liked_posts %}
+                                        <button class="btn btn-primary btn-sm like-button" data-post-id="{{ post.id }}">Unlike ({{ post.likes.count }})</button>
+                                    {% else %}
+                                        <button class="btn btn-outline-primary btn-sm like-button" data-post-id="{{ post.id }}">Like ({{ post.likes.count }})</button>
+                                    {% endif %}
+                                {% else %}
+                                    <p class="text-muted">Likes: {{ post.likes.count }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center">No posts available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const postId = button.getAttribute('data-post-id');
+
+                fetch(`/like/${postId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ post_id: postId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.liked) {
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-primary');
+                            button.innerHTML = `Unlike (${data.likes_count})`;
+                        } else {
+                            button.classList.remove('btn-primary');
+                            button.classList.add('btn-outline-primary');
+                            button.innerHTML = `Like (${data.likes_count})`;
+                        }
+                    } else {
+                        console.error('Error liking the post:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const postId = button.getAttribute('data-post-id');
+                const postContent = document.getElementById(`post-content-${postId}`);
+                const originalContent = postContent.innerText;
+
+                postContent.innerHTML = `
+                    <textarea class="form-control" id="edit-content-${postId}">${originalContent}</textarea>
+                    <button class="btn btn-primary btn-sm save-button" data-post-id="${postId}">Save</button>
+                    <button class="btn btn-secondary btn-sm cancel-button" data-post-id="${postId}">Cancel</button>
+                `;
+
+                document.querySelector(`.save-button[data-post-id="${postId}"]`).addEventListener('click', () => {
+                    const newContent = document.getElementById(`edit-content-${postId}`).value;
+
+                    fetch(`/edit_post/${postId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ content: newContent })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            postContent.innerHTML = newContent;
+                        } else {
+                            console.error('Error editing the post:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+
+                document.querySelector(`.cancel-button[data-post-id="${postId}"]`).addEventListener('click', () => {
+                    postContent.innerHTML = originalContent;
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

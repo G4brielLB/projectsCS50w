@@ -1,0 +1,29 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">New Post</h2>
+
+                        {% if message %}
+                            <div class="alert alert-danger text-center">{{ message }}</div>
+                        {% endif %}
+
+                        <form action="{% url 'new_post' %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <textarea class="form-control" name="content" id="content" rows="5" placeholder="What's on your mind?"></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

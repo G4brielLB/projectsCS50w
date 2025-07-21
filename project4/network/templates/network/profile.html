@@ -1,0 +1,119 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <h2 class="mb-3">{{ profile_user.username }}</h2>
+                        <p><strong>Followers:</strong> <span id="followers-count">{{ profile_user.followers.count }}</span> | 
+                           <strong>Following:</strong> {{ profile_user.following.count }}</p>
+                        
+                        {% if user.is_authenticated and user != profile_user %}
+                            <button type="button" id="follow-btn" class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}" data-username="{{ profile_user.username }}">
+                                {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <h3 class="text-center">Posts</h3>
+                {% for post in page_obj %}
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <p class="mb-1"><strong>{{ post.user.username }}</strong> 
+                                <span class="text-muted">{{ post.timestamp }}</span>
+                            </p>
+                            <p>{{ post.content }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Likes: <span id="likes-count-{{ post.id }}">{{ post.likes.count }}</span></small>
+                                
+                                {% if user.is_authenticated %}
+                                    <button class="btn btn-sm {% if user in post.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %} like-button" 
+                                            data-post-id="{{ post.id }}">
+                                        {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Seguir/Deixar de seguir
+        document.addEventListener('DOMContentLoaded', () => {
+            const followBtn = document.getElementById('follow-btn');
+            if (followBtn) {
+                followBtn.addEventListener('click', function() {
+                    const username = this.getAttribute('data-username');
+
+                    fetch(`/follow/${username}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.classList.toggle('btn-primary');
+                            this.classList.toggle('btn-danger');
+                            this.textContent = data.is_following ? 'Unfollow' : 'Follow';
+                            document.getElementById('followers-count').textContent = data.followers_count;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            }
+
+            // Curtir/Descurtir posts
+            document.querySelectorAll('.like-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+
+                    fetch(`/like/${postId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.classList.toggle('btn-outline-primary');
+                            this.classList.toggle('btn-primary');
+                            this.textContent = data.liked ? 'Unlike' : 'Like';
+                            document.getElementById(`likes-count-${postId}`).textContent = data.likes_count;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

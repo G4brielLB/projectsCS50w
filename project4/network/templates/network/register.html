@@ -1,0 +1,45 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Register</h2>
+
+                        {% if message %}
+                            <div class="alert alert-danger text-center">{{ message }}</div>
+                        {% endif %}
+
+                        <form action="{% url 'register' %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input class="form-control" autofocus type="text" name="username" id="username" placeholder="Enter your username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input class="form-control" type="email" name="email" id="email" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmation" class="form-label">Confirm Password</label>
+                                <input class="form-control" type="password" name="confirmation" id="confirmation" placeholder="Confirm your password">
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Register</button>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3">
+                            <p>Already have an account? <a href="{% url 'login' %}">Log In here.</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

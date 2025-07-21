@@ -1,0 +1,99 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}
+    Listing: {{ listing }}
+{% endblock %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    {% if listing.image_url %}
+                <img src="{{ listing.image_url }}" alt="{{ listing.title }}">
+            {% endif %}
+    <p>{{ listing.description }}</p>
+    <p>Starting bid: ${{ listing.starting_bid }}</p>
+    {% if listing.is_active %}
+        <p>Active</p>
+        {% if listing.highest_bid %}
+            <p>Current bid: ${{ listing.highest_bid.amount }}</p>
+        {% else %}
+            <p>No bids yet</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% if listing.created_by == user %}
+                <h4>Close Listing</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="close_listing">Close Listing</button>
+                </form>
+            {% else %}
+                <h4>Bid</h4>
+                <form method="POST" >
+                    {% csrf_token %}
+                    {{ bid_form.as_p }}
+                    <button type="submit" name="place_bid">Bid</button>
+                </form>
+            {% endif %}
+            {% if listing in user.watchlist.all %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="watchlist_remove">Remove from Watchlist</button>
+                </form>
+            {% else %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ watchlist_form.as_p }}
+                    <button type="submit" name="watchlist_add">Add to Watchlist</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <p>Closed</p>
+        
+        {% if listing.highest_bid %}
+            {% if listing.highest_bid.bidder == user %}
+                <p>You won!</p>
+            {% endif %}
+            <p>Winning bid: ${{ listing.highest_bid.amount }}</p>
+        {% else %}
+            <p>No bids</p>
+        {% endif %}
+    {% endif %}
+    
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <h4>Details</h4>
+    <ul>
+        <li>Category: {{ listing.category }}</li>
+        <li>Created by: {{ listing.created_by }}</li>
+        <li>Created on: {{ listing.created_at }}</li>
+    </ul>
+    <h4>Bids</h4>
+    <ul>
+        {% for bid in listing.bids.all %}
+            <li>{{ bid.bidder }} bid ${{ bid.amount }} on {{ bid.created_at }}</li>
+            {%empty%}
+            <li>No bids yet</li>
+        {% endfor %}
+    </ul>
+    <h4>Comments</h4>
+    <ul>
+        {% for comment in listing.comments.all %}
+            <li>{{ comment.commenter }} commented on {{ comment.created_at }}</li>
+            <p>{{ comment.text }}</p>
+        {% empty %}
+            <li>No comments yet</li>
+        {% endfor %}
+    </ul>
+    <h4>Comment</h4>
+    {% if user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" name="add_comment">Comment</button>
+    </form>
+    {% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to comment</p>
+    {% endif %}
+
+{% endblock %}
